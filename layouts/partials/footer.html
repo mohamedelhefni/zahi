@@ -1,8 +1,9 @@
 </main>
 
 <footer class="bg-stone-100 border-t border-stone-400 w-full p-4 text-center font-bold">
-	<div class="container mx-auto">
-		<p> {{ .Site.Title }}  &copy;  {{ dateFormat "2006" now }} </p>
+	<div class="container mx-auto flex items-center justify-between">
+		<p> {{ .Site.Title }} &copy; {{ dateFormat "2006" now }} </p>
+		{{ partial "social.html" .}}
 	</div>
 </footer>
 
