@@ -1,0 +1,12 @@
+<div class="flex">
+
+    {{ $social := .Site.Params }}
+
+    {{ if $social.facebook }}
+    <a href="{{ $social.facebook }}" target="_blank" rel="noopener noreferrer">Facebook</a>
+    {{ end }}
+
+    {{ if $social.twitter }}
+    <a href="{{ $social.twitter }}" target="_blank" rel="noopener noreferrer">Twitter</a>
+    {{ end }}
+</div>

@@ -1,0 +1,19 @@
+<header class="site-header w-full bg-stone-100 border-stone-400 border-b  py-5 px-3 md:px-0">
+  <nav class="site-nav flex items-center justify-between gap-3 container mx-auto">
+    <div class="flex items-center">
+      <a class="logo text-2xl md:text-3xl font-black" href="{{ .Site.BaseURL }}">
+        {{ .Site.Title }}
+      </a>
+      <ul class="main-menu flex items-center gap-3 mr-5">
+        {{ range.Site.Menus.main }}
+        <li>
+          <a class=" text-lg" href="{{ .URL }}">{{ .Name }}</a>
+        </li>
+        {{ end }}
+      </ul>
+    </div>
+    <div class="self-end">
+      {{ partial "partials/icons/search.html" .}}
+    </div>
+  </nav>
+</header>

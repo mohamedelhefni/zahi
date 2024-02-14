@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>{{ if not .IsHome }}{{ .Title }} | {{ end }}{{ .Site.Title }}</title>
+
+	<link rel="stylesheet" href="/css/output.css" type="text/css" media="all" />
+
+	{{ with .OutputFormats.Get "rss" -}}
+		{{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+	{{ end -}}
+
+</head>
+
+<body lang="ar" dir="rtl" class="bg-stone-50 font-custom flex flex-col justify-between min-h-screen">
+
+{{ partial "nav.html" . }}
+
+<main class="content container max-w-prose mx-auto flex-1 py-5 px-4 md:px-0">
