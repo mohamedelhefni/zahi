@@ -1,20 +1,16 @@
-# Hugo Starter Theme
+## Zahi Hugo Theme
+![img](./imgs/img.png)
 
-Dead-simple Hugo theme with everything you need to get started. Intended to be a starter for creating your own theme without including useless bloat like most Hugo themes.
+Zahi is a Hugo theme designed to primarily support Arabic content with a simple and clean user interface.
 
-## Getting started
 
-Inside your project folder, copy the theme to your `themes` folder. Since you're just using it as a starter for your theme, remove the git history.
-
-```bash
-git clone https://github.com/ericmurphyxyz/hugo-starter-theme themes/your-theme-name
-rm -rf themes/your-theme-name/.git
+### Development
+Start Hugo Server 
+```
+hugo server
 ```
 
-If you'd like some example content and an example config file to get started, you can copy the `exampleSite` directory into your root Hugo directory.
-
-```bash
-cp -r themes/your-theme-name/exampleSite/* ./
+Start tailwindcss watcher
 ```
-
-To learn more about building themes in Hugo, refer to Hugo's [templating documentation](https://gohugo.io/templates/).
+ npx tailwindcss -i ./static/css/style.css -o ./static/css/output.css --watch
+```
