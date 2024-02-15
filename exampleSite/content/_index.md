@@ -1,9 +1,13 @@
 ---
-title: "Home"
+title: "زاهي"
+description: |
+    أهلا بك في الصفحه الرئيسية الخاصه بقالب زاهي
+    زاهي هو قالب مدونات مجاني مصمم ليكون بسيط وسريع وسهل التعديل
+    يمكنك استخدامه للكتابه عن اي شيء تريده
 ---
 
-# Hi there
 
-Welcome to your new Hugo site.
 
-Now go build something great.
+
+
+
