@@ -1,0 +1,8 @@
+<div class="tags ">
+    {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
+    <ul class="flex items-center gap-2">
+      {{- range ($.GetTerms $tags) }}
+      <li><a class="px-3 py-2 rounded shadow bg-stone-800 text-white dark:bg-white dark:text-slate-800  " href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+      {{- end }}
+    </ul>
+</div>

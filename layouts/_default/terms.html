@@ -1,0 +1,29 @@
+{{ partial "header.html" . }}
+
+{{- if .Title }}
+<header class="page-header">
+    <h1 class="text-xl md:text-3xl my-3 font-bold">{{ .Title }}</h1>
+    {{- if .Description }}
+    <div class="post-description">
+        <p class="my-2">{{ .Description }}</p>
+    </div>
+    {{- end }}
+</header>
+{{- end }}
+
+<ul class="terms-tags flex items-center flex-wrap gap-4">
+    {{- $type := .Type }}
+    {{- range $key, $value := .Data.Terms.Alphabetical }}
+    {{- $name := .Name }}
+    {{- $count := .Count }}
+    {{- with site.GetPage (printf "/%s/%s" $type $name) }}
+    <li>
+        <a class="flex items-center px-3 py-2 rounded shadow bg-stone-800 text-white dark:bg-white dark:text-slate-800  " href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup class="mr-1">{{ $count }}</sup></strong></sup> </a>
+    </li>
+    {{- end }}
+    {{- end }}
+</ul>
+
+
+
+{{ partial "footer.html" . }}
