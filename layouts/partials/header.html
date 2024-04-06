@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 	<meta charset="UTF-8" />
@@ -7,16 +8,47 @@
 
 	<title>{{ if not .IsHome }}{{ .Title }} | {{ end }}{{ .Site.Title }}</title>
 
+	{{- /* Meta */}}
+	{{- if .IsHome }}
+	{{ with site.Params.keywords -}}
+	<meta name="keywords" content="{{- range $i, $e := . }}{{ if $i }}, {{ end }}{{ $e }}{{ end }}">{{ end }}
+	{{- else }}
+	<meta name="keywords" content="{{ if .Params.keywords -}}
+    {{- range $i, $e := .Params.keywords }}{{ if $i }}, {{ end }}{{ $e }}{{ end }} {{- else }}
+    {{- range $i, $e := .Params.tags }}{{ if $i }}, {{ end }}{{ $e }}{{ end }} {{- end -}}">
+	{{- end }}
+	<meta name="description" content="{{- with .Description }}{{ . }}{{- else }}{{- if or .IsPage .IsSection}}
+    {{- .Summary | default (printf " %s - %s" .Title site.Title) }}{{- else }} {{- with site.Params.description }}{{ .
+		}}{{- end }}{{- end }}{{- end -}}">
+	<link rel="canonical"
+		href="{{ if .Params.canonicalURL -}} {{ trim .Params.canonicalURL " " }} {{- else -}} {{ .Permalink }} {{- end }}">
+	{{- if site.Params.analytics.google.SiteVerificationTag }}
+	<meta name="google-site-verification" content="{{ site.Params.analytics.google.SiteVerificationTag }}">
+	{{- end }}
+	{{- if site.Params.analytics.yandex.SiteVerificationTag }}
+	<meta name="yandex-verification" content="{{ site.Params.analytics.yandex.SiteVerificationTag }}">
+	{{- end }}
+	{{- if site.Params.analytics.bing.SiteVerificationTag }}
+	<meta name="msvalidate.01" content="{{ site.Params.analytics.bing.SiteVerificationTag }}">
+	{{- end }}
+	{{- if site.Params.analytics.naver.SiteVerificationTag }}
+	<meta name="naver-site-verification" content="{{ site.Params.analytics.naver.SiteVerificationTag }}">
+	{{- end }}
+
+
+
 	<link rel="stylesheet" href="/css/output.css" type="text/css" media="all" />
 
 	{{ with .OutputFormats.Get "rss" -}}
-		{{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+	{{ printf `
+	<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
 	{{ end -}}
 
 </head>
 
-<body lang="ar" dir="rtl" class="bg-stone-50 font-custom flex flex-col justify-between min-h-screen dark:bg-stone-800 dark:text-white">
+<body lang="ar" dir="rtl"
+	class="bg-stone-50 font-custom flex flex-col justify-between min-h-screen dark:bg-stone-800 dark:text-white">
 
-{{ partial "nav.html" . }}
+	{{ partial "nav.html" . }}
 
-<main class="content container max-w-prose mx-auto flex-1 py-5 px-4 md:px-0">
+	<main class="content container max-w-prose mx-auto flex-1 py-5 px-4 md:px-0">
