@@ -5,9 +5,12 @@
   <p class="text-lg">{{ .Description }}</p>
 </div>
 
+{{- $pages := union .RegularPages .Sections }}
+{{- $paginator := .Paginate $pages }}
+
 {{ .Content }}
 <div class="flex flex-col gap-8 mb-10">
-  {{ range.Data.Pages }}
+  {{- range $index, $page := $paginator.Pages }}
   <article class="post-snippet flex flex-col [&:not(:last-child)]:border-b border-stone-400 pb-10">
     {{ if .Params.Cover }}
     <img src="{{ .Params.Cover }}" class="w-full h-64 object-cover rounded-md my-3" alt="{{.Title}}" loading="lazy">
@@ -27,5 +30,28 @@
 
 
 </div>
+
+{{- if gt $paginator.TotalPages 1 }}
+<nav class="pagination w-full flex items-center justify-between">
+  {{- if $paginator.HasPrev }}
+  <a class="px-2 py-1 rounded dark:bg-white dark:text-black bg-stone-800 text-white" href="{{ $paginator.Prev.URL | absURL }}">
+    «&nbsp;{{ i18n "prev_page" }}&nbsp;
+    السابق
+    {{- if (.Param "ShowPageNums") }}
+    {{- sub $paginator.PageNumber 1 }}/{{ $paginator.TotalPages }}
+    {{- end }}
+  </a>
+  {{- end }}
+  {{- if $paginator.HasNext }}
+  <a class="px-2 py-1 rounded dark:bg-white dark:text-black bg-stone-800 text-white" href="{{ $paginator.Next.URL | absURL }}">
+    التالي
+    {{- i18n "next_page" }}&nbsp;
+    {{- if (.Param "ShowPageNums") }}
+    {{- add 1 $paginator.PageNumber }}/{{ $paginator.TotalPages }}
+    {{- end }}&nbsp;»
+  </a>
+  {{- end }}
+</nav>
+{{- end }}
 
 {{ partial "footer.html" . }}
