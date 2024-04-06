@@ -4,7 +4,11 @@
     <div class="toc select-none p-3 bg-stone-100 text-black dark:bg-stone-900 dark:text-white rounded">
         <details {{if (.Param "TocOpen" ) }} open{{ end }}>
             <summary accesskey="c" title="(Alt + C)">
+                {{- if eq (.Param "Direction") "ltr" }}
+                <span class="details cursor-pointer">{{- i18n "toc" | default "Table of Contents" }}</span>
+                {{- else }}
                 <span class="details cursor-pointer">{{- i18n "toc" | default "جدول المحتويات " }}</span>
+                {{- end }}
             </summary>
 
             <div class="inner">

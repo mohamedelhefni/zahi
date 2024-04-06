@@ -11,7 +11,7 @@
 {{ .Content }}
 <div class="flex flex-col gap-6">
   {{- range $index, $page := $paginator.Pages }}
-  <article class="post-snippet flex flex-col [&:not(:last-child)]:border-b border-stone-400 pb-6">
+  <article dir="{{.Params.Direction}}" class="post-snippet flex flex-col [&:not(:last-child)]:border-b border-stone-400 pb-6">
     {{ if .Params.Cover }}
     <img src="{{ .Params.Cover }}" class="w-full h-64 object-cover rounded-md my-3" alt="{{.Title}}" loading="lazy">
     {{ end }}

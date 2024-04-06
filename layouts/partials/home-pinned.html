@@ -4,7 +4,7 @@
 <div class="flex flex-col gap-3 w-full">
     {{ range $pinned }}
     <a href="{{ .RelPermalink }}" aria-label="{{.Title}}"
-        class="p-5 shadow bg-stone-100 rounded dark:bg-stone-900 dark:text-white w-full flex flex-col gap-2">
+        class="p-5 bg-stone-100 border border-stone-400 rounded dark:bg-stone-900 dark:text-white w-full flex flex-col gap-2">
         <time class="text-xs text-muted" datetime="{{ .Date.Format " 2006-01-02T15:04:05Z07:00" }}">
             {{ .Date.Format "January 2, 2006" }}
         </time>
