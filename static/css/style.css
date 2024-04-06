@@ -10,3 +10,7 @@
 .hidden {
   display: none;
 }
+
+pre {
+  direction:  ltr !important;
+}

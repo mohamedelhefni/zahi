@@ -10,7 +10,7 @@
   {{ range.Data.Pages }}
   <article class="post-snippet flex flex-col [&:not(:last-child)]:border-b border-stone-400 pb-10">
     {{ if .Params.Cover }}
-      <img src="{{ .Params.Cover }}" class="w-full h-64 object-cover rounded-md my-3" alt="{{.Title}}" loading="lazy">
+    <img src="{{ .Params.Cover }}" class="w-full h-64 object-cover rounded-md my-3" alt="{{.Title}}" loading="lazy">
     {{ end }}
     <time class="text-xs text-muted" datetime="{{ .Date.Format " 2006-01-02T15:04:05Z07:00" }}">
       {{ .Date.Format "January 2, 2006" }}
@@ -18,7 +18,10 @@
     <h2 class="font-semibold text-2xl my-1">
       <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     </h2>
-    <p class="text-sm text-stone-700 dark:text-white"> {{ .Description }} </p>
+    <p class="text-sm mb-3 text-stone-700 dark:text-white"> {{ .Description }} </p>
+    <div class="">
+      {{ partial "tags.html" . }}
+    </div>
   </article>
   {{ end }}
 
