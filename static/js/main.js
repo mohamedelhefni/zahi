@@ -1,4 +1,3 @@
-console.log("loaded")
 const toggleThemeButton = document.getElementById('toggle-theme');
 const sunIcon = document.querySelector('.sun-icon');
 const moonIcon = document.querySelector('.moon-icon');
@@ -28,3 +27,4 @@ toggleThemeButton.addEventListener('click', function () {
         localStorage.setItem('theme', 'dark');
     }
 })
+
