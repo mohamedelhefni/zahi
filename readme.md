@@ -1,5 +1,5 @@
 ## Zahi Hugo Theme
-![img](./imgs/img.png)
+![img](https://raw.githubusercontent.com/mohamedelhefni/zahi/main/images/screenshot.png)
 
 Zahi is a Hugo theme designed to primarily support Arabic content with a simple and clean user interface.
 
