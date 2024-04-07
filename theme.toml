@@ -1,0 +1,38 @@
+name = "Zahi"
+license = "MIT"
+licenselink = "https://github.com/mohamedelhefni/zahi/blob/main/LICENSE"
+description = "A fast, minimal, responsive Hugo arabic theme"
+homepage = "https://zahi.netlify.app/"
+tags = [
+    "responsive",
+    "simple",
+    "clean",
+    "light",
+    "dark",
+    "blog",
+    "rtl",
+    "arabic",
+]
+
+features = [
+    "responsive",
+    "blog",
+    "cover-image",
+    "table-of-contents",
+    "highlight.js",
+    "cover",
+    "social-icons",
+    "minified-assets",
+    "theme-toggle",
+]
+min_version = "0.112.4"
+
+[author]
+name = "Mohamed Elhefni"
+homepage = "https://github.com/mohamedelhefni/"
+
+[original]
+name = "Zahi"
+author = "MohamedElhefni"
+homepage = "https://github.com/mohamedelhefni"
+repo = "https://github.com/mohamedelhefni/zahi/"
