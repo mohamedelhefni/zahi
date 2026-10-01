@@ -1,0 +1,6 @@
+{{/* Generated thumbnail: deterministic gradient from title hash + title text. Usage: partial "project-thumb.html" (dict "title" .Title "class" "h-full" "text" "text-xl") */}}
+{{- $hue := mod (hash.FNV32a .title) 360 -}}
+<div class="w-full {{ .class }} flex items-center justify-center p-4 text-center"
+	style="background: linear-gradient(135deg, hsl({{ $hue }} 45% 45%), hsl({{ mod (add $hue 40) 360 }} 50% 30%));">
+	<span class="{{ .text }} font-bold line-clamp-2" style="color:#fff">{{ .title }}</span>
+</div>
