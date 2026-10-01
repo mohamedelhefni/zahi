@@ -1,0 +1,10 @@
+{{- /* lowercase title / filename -> page, so [[...]] resolves like Obsidian (title wins over filename) */ -}}
+{{- $d := dict -}}
+{{- range site.RegularPages -}}
+  {{- $d = merge (dict (lower .Title) .) $d -}}
+{{- end -}}
+{{- range site.RegularPages -}}
+  {{- $p := . -}}
+  {{- with .File -}}{{- $k := lower .ContentBaseName -}}{{- if not (isset $d $k) -}}{{- $d = merge $d (dict $k $p) -}}{{- end -}}{{- end -}}
+{{- end -}}
+{{- return $d -}}

@@ -27,7 +27,7 @@
 <!-- Posts List -->
 <div class="space-y-2 mb-10">
   {{- range $index, $page := $paginator.Pages }}
-  <article class="group relative" dir="{{ .Params.Direction }}">
+  <article class="group relative" dir="{{ .Params.Direction | default "auto" }}">
     <a href="{{ .RelPermalink }}" class="block p-4 -mx-4 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800/50 transition-colors">
       <div class="flex items-start justify-between gap-4">
         <div class="flex-1 min-w-0">

@@ -19,7 +19,7 @@
     </nav>
 
     <!-- Title -->
-    <h1 class="text-2xl md:text-3xl font-semibold text-stone-900 dark:text-stone-100 mb-4 leading-tight" dir="{{ .Params.Direction }}">
+    <h1 class="text-2xl md:text-3xl font-semibold text-stone-900 dark:text-stone-100 mb-4 leading-tight" dir="{{ .Params.Direction | default "auto" }}">
       {{ .Title }}
     </h1>
 
@@ -58,12 +58,12 @@
   {{ end }}
 
   <!-- Article Content -->
-  <div dir="{{ .Params.Direction }}" class="prose prose-stone dark:prose-invert max-w-none
+  <div {{ with .Params.Direction }}dir="{{ . }}" {{ end }}class="prose prose-stone dark:prose-invert max-w-none
     prose-headings:font-semibold
     prose-a:text-sage-600 dark:prose-a:text-sage-400 prose-a:no-underline hover:prose-a:underline
     prose-code:text-sage-700 dark:prose-code:text-sage-400 prose-code:bg-stone-100 dark:prose-code:bg-stone-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
     prose-pre:bg-stone-900 dark:prose-pre:bg-stone-950 prose-pre:rounded-lg
-    prose-blockquote:border-r-2 prose-blockquote:border-sage-400 prose-blockquote:bg-stone-50 dark:prose-blockquote:bg-stone-900 prose-blockquote:not-italic
+    prose-blockquote:border-s-2 prose-blockquote:border-sage-400 prose-blockquote:bg-stone-50 dark:prose-blockquote:bg-stone-900 prose-blockquote:not-italic
     prose-img:rounded-lg
     mb-10">
 
@@ -118,7 +118,7 @@
     {{ range . }}
     <a href="{{ .RelPermalink }}" class="related-post-card group">
       <div class="flex-1 min-w-0">
-        <h3 class="font-medium text-stone-800 dark:text-stone-200 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors line-clamp-1 mb-1">
+        <h3 class="font-medium text-stone-800 dark:text-stone-200 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors line-clamp-1 mb-1" dir="auto">
           {{ .Title }}
         </h3>
         <p class="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">
@@ -139,7 +139,7 @@
   {{ with .PrevInSection }}
   <a href="{{ .RelPermalink }}" class="nav-post-card group">
     <span class="text-xs text-stone-400 dark:text-stone-500 mb-1"> → السابقة</span>
-    <span class="font-medium text-stone-700 dark:text-stone-300 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors line-clamp-1">{{ .Title }}</span>
+    <span class="font-medium text-stone-700 dark:text-stone-300 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors line-clamp-1" dir="auto">{{ .Title }}</span>
   </a>
   {{ else }}
   <div></div>
@@ -148,7 +148,7 @@
   {{ with .NextInSection }}
   <a href="{{ .RelPermalink }}" class="nav-post-card group text-left">
     <span class="text-xs text-stone-400 dark:text-stone-500 mb-1 text-left">التالية ← </span>
-    <span class="font-medium text-stone-700 dark:text-stone-300 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors line-clamp-1">{{ .Title }}</span>
+    <span class="font-medium text-stone-700 dark:text-stone-300 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors line-clamp-1" dir="auto">{{ .Title }}</span>
   </a>
   {{ end }}
 </nav>

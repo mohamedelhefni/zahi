@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Aref+Ruqaa:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
 
 *, ::before, ::after{
   --tw-border-spacing-x: 0;
@@ -1829,6 +1829,10 @@ video {
   text-transform: uppercase;
 }
 
+.lowercase{
+  text-transform: lowercase;
+}
+
 .leading-relaxed{
   line-height: 1.625;
 }
@@ -1982,7 +1986,7 @@ html {
 }
 
 body {
-  font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  font-family: 'Amiri', system-ui, serif;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   -webkit-font-smoothing: antialiased;
@@ -1992,7 +1996,7 @@ body {
 }
 
 .font-custom {
-  font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  font-family: 'Amiri', system-ui, serif;
 }
 
 /* Bolder font weights */
@@ -2010,6 +2014,7 @@ strong, b, .font-bold {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: "Aref Ruqaa", serif;
   font-weight: 700;
   line-height: 1.3;
 }
@@ -2020,6 +2025,18 @@ h1, h2, h3, h4, h5, h6 {
 
 pre {
   direction: ltr !important;
+  text-align: left;
+}
+
+/* inline code stays LTR inside RTL text */
+
+.prose code {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.prose video {
+  max-width: 100%;
 }
 
 /* ===== Sage Color Utilities ===== */
@@ -3549,14 +3566,14 @@ pre {
 }
 
 .prose blockquote{
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-  border-right-width: 2px;
+  border-start-end-radius: 0.5rem;
+  border-end-end-radius: 0.5rem;
+  border-inline-start-width: 2px;
   --tw-bg-opacity: 1;
   background-color: rgb(250 250 249 / var(--tw-bg-opacity, 1));
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-  padding-right: 1.25rem;
+  padding-inline-start: 1.25rem;
 }
 
 .prose blockquote:is(.dark *){
@@ -5038,8 +5055,8 @@ pre {
   text-decoration-line: underline;
 }
 
-.prose-blockquote\:border-r-2 :is(:where(blockquote):not(:where([class~="not-prose"],[class~="not-prose"] *))){
-  border-right-width: 2px;
+.prose-blockquote\:border-s-2 :is(:where(blockquote):not(:where([class~="not-prose"],[class~="not-prose"] *))){
+  border-inline-start-width: 2px;
 }
 
 .prose-blockquote\:bg-stone-50 :is(:where(blockquote):not(:where([class~="not-prose"],[class~="not-prose"] *))){

@@ -4,13 +4,10 @@
 {{- /* Generate graph data with tags as nodes */ -}}
 {{- $nodes := slice -}}
 {{- $links := slice -}}
-{{- $titleToPage := dict -}}
+{{- $titleToPage := partialCached "wiki-index.html" . -}}
 {{- $addedTags := slice -}}
 
 {{- /* Build page lookup */ -}}
-{{- range .Site.RegularPages -}}
-    {{- $titleToPage = merge $titleToPage (dict .Title .) -}}
-{{- end -}}
 
 {{- /* Add page nodes */ -}}
 {{- range .Site.RegularPages -}}
@@ -24,10 +21,10 @@
     {{- $currentTags := .Params.tags -}}
     
     {{- /* Wiki links */ -}}
-    {{- $pattern := `\[\[([^\]|]+)(?:\|[^\]]+)?\]\]` -}}
+    {{- $pattern := `\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]+)?\]\]` -}}
     {{- range $match := findRE $pattern $content -}}
         {{- $linkTitle := replaceRE $pattern "$1" $match -}}
-        {{- $targetPage := index $titleToPage $linkTitle -}}
+        {{- $targetPage := index $titleToPage (lower (strings.TrimSpace $linkTitle)) -}}
         {{- if $targetPage -}}
             {{- $links = $links | append (dict "source" $source "target" $targetPage.RelPermalink "type" "direct") -}}
         {{- end -}}

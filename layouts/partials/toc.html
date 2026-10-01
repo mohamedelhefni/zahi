@@ -22,7 +22,7 @@
             {{- $indent := "" -}}
             {{- if eq $headerLevel "3" }}{{ $indent = "pr-4" }}{{ end -}}
             {{- if eq $headerLevel "4" }}{{ $indent = "pr-8" }}{{ end -}}
-            <li class="{{ $indent }}">
+            <li class="{{ $indent }}" dir="auto">
                 <a href="#{{ $cleanedID }}" 
                    class="toc-link block py-1 text-sm text-stone-500 dark:text-stone-400 hover:text-sage-600 dark:hover:text-sage-400 transition-colors">
                     {{- $header | plainify | safeHTML -}}

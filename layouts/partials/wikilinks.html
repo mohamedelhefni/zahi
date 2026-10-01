@@ -1,36 +1,47 @@
-{{- /* 
-  Process content with wiki-style links
-  This processes [[Page Title]] and [[Page Title|Display Text]] syntax
+{{- /*
+  Obsidian-style syntax on rendered HTML:
+  [[Page]]  [[Page|text]]  [[Page#Heading]]  ![[file.png]]  ![[file.mp4]]  ![[file.png|300]]
+  Page = title or filename (case-insensitive). Files come from the page bundle, else static/attachments/.
+  Code blocks are left alone. Blocks get dir="auto" so mixed Arabic/English renders RTL/LTR per paragraph.
 */ -}}
-
+{{- $idx := partialCached "wiki-index.html" . -}}
 {{- $content := .Content -}}
-{{- $site := .Site -}}
 
-{{- /* Build a map of titles to pages for quick lookup */ -}}
-{{- $titleToPage := dict -}}
-{{- range $site.RegularPages -}}
-    {{- $titleToPage = merge $titleToPage (dict .Title .) -}}
+{{- $codes := findRE `(?s)<pre.*?</pre>|<code.*?</code>` $content -}}
+{{- range $i, $c := $codes -}}{{- $content = replace $content $c (printf "@@CODE%d@@" $i) 1 -}}{{- end -}}
+
+{{- $embed := `!\[\[([^\]|]+)(?:\|([^\]]+))?\]\]` -}}
+{{- range $m := findRE $embed $content -}}
+  {{- $name := htmlUnescape (replaceRE $embed "$1" $m) | strings.TrimSpace -}}
+  {{- $opt := replaceRE $embed "$2" $m -}}
+  {{- $src := printf "attachments/%s" (replace $name " " "%20") | relURL -}}
+  {{- with $.Resources.Get $name -}}{{- $src = .RelPermalink -}}{{- end -}}
+  {{- $w := "" -}}{{- if findRE `^\d+$` $opt -}}{{- $w = printf ` width="%s"` $opt -}}{{- end -}}
+  {{- $html := printf `<img src="%s" alt="%s" loading="lazy"%s>` $src $name $w -}}
+  {{- if in (slice ".mp4" ".webm" ".mov") (lower (path.Ext $name)) -}}
+    {{- $html = printf `<video controls src="%s"%s></video>` $src $w -}}
+  {{- end -}}
+  {{- $content = replace $content $m $html 1 -}}
 {{- end -}}
 
-{{- /* Process wiki-style links */ -}}
-{{- $pattern := `\[\[([^\]|]+)(?:\|([^\]]+))?\]\]` -}}
-{{- range $match := findRE $pattern $content -}}
-    {{- $linkTitle := replaceRE $pattern "$1" $match -}}
-    {{- $displayText := replaceRE $pattern "$2" $match -}}
-    {{- if eq $displayText "" -}}
-        {{- $displayText = $linkTitle -}}
-    {{- end -}}
-    
-    {{- /* Find the target page */ -}}
-    {{- $targetPage := index $titleToPage $linkTitle -}}
-    
-    {{- if $targetPage -}}
-        {{- $link := printf `<a href="%s" class="wikilink">%s</a>` $targetPage.RelPermalink $displayText -}}
-        {{- $content = replace $content $match $link -}}
-    {{- else -}}
-        {{- $brokenLink := printf `<span class="wikilink broken" title="صفحة غير موجودة">%s</span>` $displayText -}}
-        {{- $content = replace $content $match $brokenLink -}}
-    {{- end -}}
+{{- $pattern := `\[\[([^\]|#]+)(?:#([^\]|]*))?(?:\|([^\]]+))?\]\]` -}}
+{{- range $m := findRE $pattern $content -}}
+  {{- $title := replaceRE $pattern "$1" $m | strings.TrimSpace -}}
+  {{- $head := replaceRE $pattern "$2" $m -}}
+  {{- $text := replaceRE $pattern "$3" $m | default $title -}}
+  {{- $page := index $idx (lower (htmlUnescape $title)) -}}
+  {{- if $page -}}
+    {{- $href := $page.RelPermalink -}}{{- with $head -}}{{- $href = printf "%s#%s" $href (anchorize (htmlUnescape .)) -}}{{- end -}}
+    {{- $content = replace $content $m (printf `<a href="%s" class="wikilink">%s</a>` $href $text) 1 -}}
+  {{- else -}}
+    {{- $content = replace $content $m (printf `<span class="wikilink broken" title="صفحة غير موجودة">%s</span>` $text) 1 -}}
+  {{- end -}}
+{{- end -}}
+
+{{- range $i, $c := $codes -}}{{- $content = replace $content (printf "@@CODE%d@@" $i) $c 1 -}}{{- end -}}
+
+{{- if not .Params.Direction -}}
+  {{- $content = replaceRE `<(p|ul|ol|li|h[1-6]|blockquote|table|td|th)([\s>])` `<$1 dir="auto"$2` $content -}}
 {{- end -}}
 
 {{ $content | safeHTML }}

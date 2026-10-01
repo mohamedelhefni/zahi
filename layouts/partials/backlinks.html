@@ -7,18 +7,17 @@
 {{/* Find all pages that link to this page */}}
 {{ $backlinks := slice }}
 
+{{ $keys := slice (lower $currentTitle) (lower .File.ContentBaseName) }}
+{{ $wiki := `\[\[([^\]|#]+)` }}
+
 {{ range where site.RegularPages "RelPermalink" "ne" $currentRelPermalink }}
-  {{ $page := . }}
   {{ $content := .RawContent }}
-  
-  {{/* Check for wikilinks [[Title]] */}}
-  {{ if findRE (printf `\[\[%s\]\]` $currentTitle) $content }}
-    {{ $backlinks = $backlinks | append $page }}
-  {{ else }}
-    {{/* Check for regular markdown links to this page */}}
-    {{ if or (in $content $currentPermalink) (in $content $currentRelPermalink) }}
-      {{ $backlinks = $backlinks | append $page }}
-    {{ end }}
+  {{ $hit := false }}
+  {{ range findRE $wiki $content }}
+    {{ if in $keys (lower (strings.TrimSpace (replaceRE $wiki "$1" .))) }}{{ $hit = true }}{{ end }}
+  {{ end }}
+  {{ if or $hit (in $content $currentPermalink) (in $content $currentRelPermalink) }}
+    {{ $backlinks = $backlinks | append . }}
   {{ end }}
 {{ end }}
 
@@ -39,7 +38,7 @@
         <svg class="w-3.5 h-3.5 mt-0.5 text-stone-400 dark:text-stone-500 group-hover:text-sage-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
-        <span class="text-stone-600 dark:text-stone-400 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors">
+        <span class="text-stone-600 dark:text-stone-400 group-hover:text-sage-600 dark:group-hover:text-sage-400 transition-colors" dir="auto">
           {{ .Title }}
         </span>
       </a>
