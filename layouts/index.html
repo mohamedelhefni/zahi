@@ -26,35 +26,22 @@
   </div>
 </section>
 
-<!-- Stats Section -->
+<!-- Stats Section: each card links to its content; zero counts are hidden -->
+{{ $posts := where .Site.RegularPages "Section" "posts" }}
+{{ $series := .Site.Taxonomies.series }}
+{{ $stats := slice
+  (dict "icon" "📝" "n" (len $posts) "label" "مقالة" "url" "posts/")
+  (dict "icon" "📚" "n" (len .Site.Taxonomies.series) "label" "سلسلة" "url" "series/")
+  (dict "icon" "🏷️" "n" (len .Site.Taxonomies.tags) "label" "تصنيف" "url" "tags/")
+  (dict "icon" "🔗" "n" (len .Site.RegularPages) "label" "صفحة" "url" "graph/") }}
 <section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
-  {{ $posts := where .Site.RegularPages "Section" "posts" }}
-  {{ $tags := .Site.Taxonomies.tags }}
-  {{ $series := .Site.Taxonomies.series }}
-
-  <div class="stat-card">
-    <div class="stat-icon">📝</div>
-    <div class="stat-number">{{ len $posts }}</div>
-    <div class="stat-label">مقالة</div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon">📚</div>
-    <div class="stat-number">{{ len $series }}</div>
-    <div class="stat-label">سلسلة</div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon">🏷️</div>
-    <div class="stat-number">{{ len $tags }}</div>
-    <div class="stat-label">تصنيف</div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon">🔗</div>
-    <div class="stat-number">{{ len .Site.RegularPages }}</div>
-    <div class="stat-label">صفحة</div>
-  </div>
+  {{ range $stats }}{{ if gt .n 0 }}
+  <a href="{{ .url | relLangURL }}" class="stat-card">
+    <div class="stat-icon">{{ .icon }}</div>
+    <div class="stat-number">{{ .n }}</div>
+    <div class="stat-label">{{ .label }}</div>
+  </a>
+  {{ end }}{{ end }}
 </section>
 
 <!-- Series Section -->
@@ -64,7 +51,7 @@
     <h2 class="text-lg font-semibold text-stone-900 dark:text-stone-100">
       السلاسل التعليمية
     </h2>
-    <a href="/series/" class="text-sm text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 transition-colors">
+    <a href="{{ "series/" | relLangURL }}" class="text-sm text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 transition-colors">
       عرض الكل ←
     </a>
   </div>
@@ -111,7 +98,7 @@
     <h2 class="text-lg font-semibold text-stone-900 dark:text-stone-100">
       أحدث المقالات
     </h2>
-    <a href="/posts/" class="text-sm text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 transition-colors">
+    <a href="{{ "posts/" | relLangURL }}" class="text-sm text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 transition-colors">
       عرض الكل ←
     </a>
   </div>
@@ -156,12 +143,8 @@
     {{- /* Generate graph data with tags */ -}}
     {{- $nodes := slice -}}
     {{- $links := slice -}}
-    {{- $titleToPage := dict -}}
+    {{- $titleToPage := partialCached "wiki-index.html" . -}}
     {{- $addedTags := slice -}}
-
-    {{- range .Site.RegularPages -}}
-        {{- $titleToPage = merge $titleToPage (dict .Title .) -}}
-    {{- end -}}
     {{- range .Site.RegularPages -}}
         {{- $nodes = $nodes | append (dict "id" .RelPermalink "title" .Title "type" "page") -}}
     {{- end -}}
@@ -169,10 +152,10 @@
         {{- $source := .RelPermalink -}}
         {{- $content := .RawContent -}}
         {{- $currentTags := .Params.tags -}}
-        {{- $pattern := `\[\[([^\]|]+)(?:\|[^\]]+)?\]\]` -}}
+        {{- $pattern := `\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]+)?\]\]` -}}
         {{- range $match := findRE $pattern $content -}}
             {{- $linkTitle := replaceRE $pattern "$1" $match -}}
-            {{- $targetPage := index $titleToPage $linkTitle -}}
+            {{- $targetPage := index $titleToPage (lower (strings.TrimSpace $linkTitle)) -}}
             {{- if $targetPage -}}
                 {{- $links = $links | append (dict "source" $source "target" $targetPage.RelPermalink "type" "direct") -}}
             {{- end -}}
