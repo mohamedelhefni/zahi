@@ -3,8 +3,10 @@ title = "زاهي"
 languageCode = "ar"
 defaultContentLanguage = "ar"
 
+
+
 # Enable useful features
-enableRobotsTXT = false
+enableRobotsTXT = true
 enableEmoji = true
 enableGitInfo = true
 
@@ -30,11 +32,11 @@ filename = "sitemap.xml"
 [module]
   [[module.imports]]
     path = "github.com/mohamedelhefni/zahi"
-    
+
   [[module.mounts]]
     source = "content"
     target = "content"
-    
+
   [[module.mounts]]
     source = "static"
     target = "static"
@@ -91,7 +93,7 @@ github = "mohamedelhefni"
 # Open Graph default image (place in static/images/)
 # ogImage = "images/og-default.png"
 
-# Site verification (optional)
+# Site verification (optional) - Google Search Console "HTML tag" content value
 # [params.verification]
 # google = "your-google-verification-code"
 # bing = "your-bing-verification-code"

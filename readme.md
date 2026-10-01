@@ -90,12 +90,21 @@ defaultContentLanguage = "ar"
 tag = "tags"
 series = "series"
 
+enableRobotsTXT = true   # theme provides robots.txt with the sitemap link
+
 [outputs]
 home = ["HTML", "RSS", "JSON"]
 
 [params]
 description = "وصف موقعك"
 author = "اسمك"
+
+# SEO / Google Search Console (all optional)
+# ogImage = "images/og-default.png"   # default share image, 1200x630, in static/
+[params.verification]
+google = "code-from-search-console"   # HTML-tag verification: only the content value
+# bing = ""
+# yandex = ""
 
 [params.social]
 twitter = "username"
@@ -151,11 +160,30 @@ toc: true
 
 ### Wiki Links
 
-Link to other posts using wiki-style syntax:
+Link to other posts using wiki-style syntax. A link matches a post's title **or** its filename (case-insensitive):
 
 ```markdown
 اقرأ المزيد في [[عنوان صفحة أخرى]]
+[[عنوان صفحة أخرى|نص مختلف]]
+[[عنوان صفحة أخرى#عنوان فرعي]]
+![[photo.png]]  ![[photo.png|300]]  ![[clip.mp4]]
 ```
+
+Embedded files are looked up in the post's page bundle, then in `static/attachments/`. Links inside code blocks are ignored. Pages that link to a post appear as backlinks and in the graph.
+
+### Writing in Obsidian
+
+Edit your site like an Obsidian vault (`[[` autocomplete, backlinks, graph, drag-and-drop images):
+
+```bash
+cp -r themes/zahi/obsidian-starter/. .   # adds .obsidian/ and templates/
+```
+
+Then open the site folder as a vault. New notes land in `content/posts/`, images in `static/attachments/`, and the **Templates** plugin inserts the front matter (`templates/post.md`) - always insert it, since Hugo needs `title` and `date`.
+
+### Arabic / RTL
+
+Every paragraph, list, heading, quote and table picks its own direction (`dir="auto"`), so mixed Arabic/English text and fully English posts render correctly; code stays LTR. Set `Direction: ltr` (or `rtl`) in front matter to force a whole post.
 
 ### Series
 

@@ -50,14 +50,19 @@
 	{{ end }}
 
 	{{/* ===== Robots ===== */}}
-	{{- if or .Params.noindex site.Params.noindex }}
+	{{- if or .Params.noindex site.Params.noindex (eq .Kind "404") }}
 	<meta name="robots" content="noindex, nofollow">
 	{{- else }}
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 	{{- end }}
 
 	{{/* ===== Canonical URL ===== */}}
+	{{- if ne .Kind "404" }}
 	<link rel="canonical" href="{{ .Params.canonicalURL | default .Permalink }}">
+	{{- end }}
+
+	{{/* ===== RSS autodiscovery ===== */}}
+	{{ with site.Home.OutputFormats.Get "RSS" }}<link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ .Permalink }}">{{ end }}
 
 	{{/* ===== Alternate Languages (if multilingual) ===== */}}
 	{{ range .AllTranslations }}
@@ -73,14 +78,14 @@
 	{{- if .IsHome }}
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="{{ site.Title }}">
-	<meta property="og:description" content="{{ site.Params.description }}">
+	<meta property="og:description" content="{{ $description }}">
 	<meta property="og:url" content="{{ site.BaseURL }}">
 	{{- else if .IsPage }}
 	<meta property="og:type" content="article">
 	<meta property="og:title" content="{{ .Title }}">
 	<meta property="og:description" content="{{ $description }}">
 	<meta property="og:url" content="{{ .Permalink }}">
-	<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+	{{ with .Date }}{{ if not .IsZero }}<meta property="article:published_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">{{ end }}{{ end }}
 	{{ with .Lastmod }}<meta property="article:modified_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">{{ end }}
 	{{ with .Params.author | default site.Params.author }}<meta property="article:author" content="{{ . }}">{{ end }}
 	{{ range .Params.tags }}<meta property="article:tag" content="{{ . }}">{{ end }}
@@ -118,103 +123,28 @@
 	<meta name="twitter:image" content="{{ . }}">
 	{{- end }}
 
-	{{/* ===== JSON-LD Structured Data ===== */}}
+	{{/* ===== JSON-LD Structured Data (jsonify escapes quotes/Arabic safely) ===== */}}
+	{{- $lang := site.Language.Lang | default "ar" }}
+	{{- $author := .Params.author | default site.Params.author | default site.Title }}
 	{{- if .IsHome }}
-	<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@type": "WebSite",
-		"name": "{{ site.Title }}",
-		"url": "{{ site.BaseURL }}",
-		"description": "{{ site.Params.description }}",
-		"inLanguage": "{{ site.Language.Lang | default "ar" }}",
-		"potentialAction": {
-			"@type": "SearchAction",
-			"target": "{{ site.BaseURL }}search?q={search_term_string}",
-			"query-input": "required name=search_term_string"
-		}
-		{{ with site.Params.author }},
-		"author": {
-			"@type": "Person",
-			"name": "{{ . }}"
-		}
-		{{ end }}
-	}
-	</script>
-	{{- else if .IsPage }}
-	<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@type": "Article",
-		"headline": "{{ .Title }}",
-		"description": "{{ $description }}",
-		"url": "{{ .Permalink }}",
-		"datePublished": "{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}",
-		"dateModified": "{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}",
-		"inLanguage": "{{ site.Language.Lang | default "ar" }}",
-		"mainEntityOfPage": {
-			"@type": "WebPage",
-			"@id": "{{ .Permalink }}"
-		},
-		"author": {
-			"@type": "Person",
-			"name": "{{ .Params.author | default site.Params.author | default site.Title }}"
-		},
-		"publisher": {
-			"@type": "Organization",
-			"name": "{{ site.Title }}",
-			"url": "{{ site.BaseURL }}"
-			{{ with $ogImage }},
-			"logo": {
-				"@type": "ImageObject",
-				"url": "{{ . }}"
-			}
-			{{ end }}
-		}
-		{{ with $ogImage }},
-		"image": {
-			"@type": "ImageObject",
-			"url": "{{ . }}"
-		}
-		{{ end }}
-		{{ with .Params.tags }},
-		"keywords": "{{ delimit . ", " }}"
-		{{ end }}
-		{{ with .WordCount }},
-		"wordCount": {{ . }}
-		{{ end }}
-	}
-	</script>
+	{{- $ld := dict "@context" "https://schema.org" "@type" "WebSite" "name" site.Title "url" site.BaseURL "description" $description "inLanguage" $lang }}
+	{{- with site.Params.author }}{{ $ld = merge $ld (dict "author" (dict "@type" "Person" "name" .)) }}{{ end }}
+	<script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
+	{{- else if and .IsPage (not .IsNode) }}
+	{{- $publisher := dict "@type" "Organization" "name" site.Title "url" site.BaseURL }}
+	{{- $ld := dict "@context" "https://schema.org" "@type" "Article" "headline" .Title "description" $description "url" .Permalink "inLanguage" $lang "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink) "author" (dict "@type" "Person" "name" $author) "publisher" $publisher }}
+	{{- with .Date }}{{ if not .IsZero }}{{ $ld = merge $ld (dict "datePublished" (.Format "2006-01-02T15:04:05Z07:00")) }}{{ end }}{{ end }}
+	{{- with .Lastmod }}{{ if not .IsZero }}{{ $ld = merge $ld (dict "dateModified" (.Format "2006-01-02T15:04:05Z07:00")) }}{{ end }}{{ end }}
+	{{- with $ogImage }}{{ $ld = merge $ld (dict "image" .) }}{{ end }}
+	{{- with .Params.tags }}{{ $ld = merge $ld (dict "keywords" (delimit . ", ")) }}{{ end }}
+	{{- with .WordCount }}{{ $ld = merge $ld (dict "wordCount" .) }}{{ end }}
+	<script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
 
-	{{/* Breadcrumb JSON-LD */}}
-	<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		"itemListElement": [
-			{
-				"@type": "ListItem",
-				"position": 1,
-				"name": "{{ site.Title }}",
-				"item": "{{ site.BaseURL }}"
-			}
-			{{- if .Parent }}
-			,{
-				"@type": "ListItem",
-				"position": 2,
-				"name": "{{ .Parent.Title }}",
-				"item": "{{ .Parent.Permalink }}"
-			}
-			{{- end }}
-			,{
-				"@type": "ListItem",
-				"position": {{ if .Parent }}3{{ else }}2{{ end }},
-				"name": "{{ .Title }}",
-				"item": "{{ .Permalink }}"
-			}
-		]
-	}
-	</script>
+	{{- $items := slice (dict "@type" "ListItem" "position" 1 "name" site.Title "item" site.BaseURL) }}
+	{{- $pos := 2 }}
+	{{- with .Parent }}{{ if not .IsHome }}{{ $items = $items | append (dict "@type" "ListItem" "position" $pos "name" .Title "item" .Permalink) }}{{ $pos = 3 }}{{ end }}{{ end }}
+	{{- $items = $items | append (dict "@type" "ListItem" "position" $pos "name" .Title "item" .Permalink) }}
+	<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items | jsonify | safeJS }}</script>
 	{{- end }}
 
 	{{/* ===== Verification Tags ===== */}}
@@ -255,13 +185,8 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 	{{/* ===== Stylesheet ===== */}}
-	<link rel="stylesheet" href="/css/output.css" type="text/css" media="all" />
-	<link rel="stylesheet" href="/css/syntax.css" type="text/css" media="all" />
-
-	{{/* ===== RSS Feed ===== */}}
-	{{ with .OutputFormats.Get "rss" }}
-	{{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
-	{{ end }}
+	<link rel="stylesheet" href="{{ "css/output.css" | relURL }}" type="text/css" media="all" />
+	<link rel="stylesheet" href="{{ "css/syntax.css" | relURL }}" type="text/css" media="all" />
 
 	{{/* ===== Custom Head (for analytics, etc.) ===== */}}
 	{{ partial "head-custom.html" . }}
