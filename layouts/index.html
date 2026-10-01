@@ -286,7 +286,7 @@
   <div class="flex flex-wrap gap-2">
     {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
     <a href="{{ "/tags/" | relLangURL }}{{ $name | urlize }}/"
-       class="tag-cloud-item">
+       class="tag-cloud-item" style="--tag-h:{{ mod (hash.FNV32a (lower $name)) 360 }}">
       <span>{{ $name }}</span>
       <span class="tag-count">({{ len $taxonomy }})</span>
     </a>

@@ -142,30 +142,43 @@ pre {
 /* ===== Tags - Subtle ===== */
 .tag-pill {
   @apply inline-flex items-center px-2.5 py-1 rounded-md;
-  @apply bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400;
   font-size: 0.8rem;
   font-weight: 500;
 }
 
 .tag-pill-link {
   @apply inline-flex items-center px-3 py-1.5 rounded-md;
-  @apply bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400;
-  @apply hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors;
+  @apply transition-colors;
   font-size: 0.85rem;
   font-weight: 500;
 }
 
 .tag-cloud-item {
-  @apply inline-flex items-center gap-2 px-4 py-2 rounded-md;
-  @apply bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800;
-  @apply hover:border-stone-300 dark:hover:border-stone-700 transition-colors;
-  @apply text-stone-600 dark:text-stone-400;
-  font-size: 0.95rem;
+  @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border transition-colors;
+  font-size: 0.8rem;
 }
 
 .tag-cloud-item .tag-count {
-  @apply text-stone-400 dark:text-stone-500;
-  font-size: 0.85rem;
+  opacity: 0.6;
+  font-size: 0.7rem;
+}
+
+/* Per-tag colour: templates set --tag-h (hue hashed from the tag name) */
+.tag-pill, .tag-pill-link, .tag-cloud-item, .term-chip {
+  background: hsl(var(--tag-h, 30) 60% 94%);
+  color: hsl(var(--tag-h, 30) 55% 30%);
+  border-color: hsl(var(--tag-h, 30) 50% 85%);
+}
+.tag-pill-link:hover, .tag-cloud-item:hover, .term-chip:hover {
+  background: hsl(var(--tag-h, 30) 60% 88%);
+}
+.dark .tag-pill, .dark .tag-pill-link, .dark .tag-cloud-item, .dark .term-chip {
+  background: hsl(var(--tag-h, 30) 30% 18%);
+  color: hsl(var(--tag-h, 30) 60% 78%);
+  border-color: hsl(var(--tag-h, 30) 30% 28%);
+}
+.dark .tag-pill-link:hover, .dark .tag-cloud-item:hover, .dark .term-chip:hover {
+  background: hsl(var(--tag-h, 30) 30% 24%);
 }
 
 /* ===== Pagination ===== */

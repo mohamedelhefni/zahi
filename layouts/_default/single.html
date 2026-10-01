@@ -41,7 +41,7 @@
     {{ if .Params.tags }}
     <div class="flex flex-wrap gap-1.5">
       {{ range .Params.tags }}
-      <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}/" class="tag-pill-link">
+      <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}/" class="tag-pill-link" style="--tag-h:{{ mod (hash.FNV32a (lower .)) 360 }}">
         {{ . }}
       </a>
       {{ end }}

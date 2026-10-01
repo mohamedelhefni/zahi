@@ -64,7 +64,7 @@
         {{ end }}
         {{ if .Params.tags }}
         {{ range first 3 .Params.tags }}
-        <span class="tag-pill text-xs">{{ . }}</span>
+        <span class="tag-pill text-xs" style="--tag-h:{{ mod (hash.FNV32a (lower .)) 360 }}">{{ . }}</span>
         {{ end }}
         {{ end }}
       </div>

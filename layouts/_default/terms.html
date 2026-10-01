@@ -18,7 +18,7 @@
     {{- $count := .Count }}
     {{- with site.GetPage (printf "/%s/%s" $type $name) }}
     <li>
-        <a class="flex items-center px-3 py-2 rounded shadow bg-stone-800 text-white dark:bg-white dark:text-slate-800  " href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup class="mr-1">{{ $count }}</sup></strong></sup> </a>
+        <a class="term-chip flex items-center px-3 py-2 rounded-md transition-colors" style="--tag-h:{{ mod (hash.FNV32a (lower .Name)) 360 }}" href="{{ .Permalink }}">{{ .Name }} <sup><strong><sup class="mr-1">{{ $count }}</sup></strong></sup> </a>
     </li>
     {{- end }}
     {{- end }}

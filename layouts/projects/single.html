@@ -150,7 +150,7 @@
 		<h3 class="text-sm font-semibold text-stone-500 dark:text-stone-400 mb-3">الوسوم</h3>
 		<div class="flex flex-wrap gap-2">
 			{{ range . }}
-			<a href="/tags/{{ . | urlize }}/" class="tag-pill-link">{{ . }}</a>
+			<a href="/tags/{{ . | urlize }}/" class="tag-pill-link" style="--tag-h:{{ mod (hash.FNV32a (lower .)) 360 }}">{{ . }}</a>
 			{{ end }}
 		</div>
 	</div>
