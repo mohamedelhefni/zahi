@@ -108,6 +108,7 @@ github = "mohamedelhefni"
     apiUrl = "https://siraaj.live"
     projectId = "zahi"
     autoTrack = true
+    trackingToken = "siraaj_trk_XXXXXXXX"  # from your Siraaj project settings
 
 # Disqus comments (optional)
 # [services]

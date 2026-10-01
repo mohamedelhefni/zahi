@@ -26,13 +26,14 @@
 {{/* Siraaj Analytics */}}
 {{ with site.Params.analytics.siraaj }}
 {{ if .projectId }}
-<script src="{{ .apiUrl | default "https://siraaj.live" }}/sdk/analytics.umd.min.js"></script>
+<script src="{{ .apiUrl | default "https://siraaj.live" }}/sdk/analytics.min.js"></script>
 <script>
   const analytics = SiraajAnalytics.analytics || SiraajAnalytics.default;
   analytics.init({
     apiUrl: '{{ .apiUrl | default "https://siraaj.live" }}',
     projectId: '{{ .projectId }}',
-    autoTrack: {{ .autoTrack | default true }}
+    autoTrack: {{ if isset . "autotrack" }}{{ .autoTrack }}{{ else }}true{{ end }}{{ with .trackingToken }},
+    trackingToken: '{{ . }}'{{ end }}
   });
   analytics.pageView();
 </script>
